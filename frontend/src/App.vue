@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Fragment, h, type FunctionalComponent } from 'vue'
+
 interface AuctionLot {
   readonly id: string
   readonly lotCode: string
@@ -167,6 +169,196 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
   { id: 'spotify', name: 'Spotify', iconId: '#icon-spotify' },
   { id: 'github', name: 'GitHub', iconId: '#icon-github' },
 ]
+
+interface TicketFormatOption {
+  readonly id: 'f-cards' | 'f-stubs' | 'f-table' | 'f-posters'
+  readonly label: string
+  readonly shortLabel: string
+  readonly iconId: string
+}
+
+const ticketFormats: readonly TicketFormatOption[] = [
+  { id: 'f-cards', label: 'Card Grid', shortLabel: 'Cards', iconId: '#icon-fmt-cards' },
+  { id: 'f-stubs', label: 'Ticket Stubs', shortLabel: 'Stubs', iconId: '#icon-fmt-stubs' },
+  { id: 'f-table', label: 'Market Table', shortLabel: 'Table', iconId: '#icon-fmt-table' },
+  { id: 'f-posters', label: 'Poster Showcase', shortLabel: 'Posters', iconId: '#icon-fmt-posters' },
+]
+
+const FormatSwitcherBar: FunctionalComponent<{ prefix: string }> = (props) =>
+  h('div', { class: 'fmt-switcher-bar', role: 'group', 'aria-label': 'Ticket display format' }, [
+    h('span', { class: 'fmt-switcher-title' }, 'View:'),
+    ...ticketFormats.map((fmt) =>
+      h('label', { key: `${props.prefix}-${fmt.id}`, class: 'fmt-switch-btn', for: fmt.id }, [
+        h('svg', { class: 'fmt-ico', 'aria-hidden': 'true' }, [h('use', { href: fmt.iconId })]),
+        h('span', fmt.label),
+      ]),
+    ),
+  ])
+
+const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
+  h(Fragment, null, [
+    h(
+      'div',
+      { class: 'fmt-view-stubs' },
+      lots.map((lot) =>
+        h('article', { key: `${props.prefix}-stub-${lot.id}`, class: 'fmt-stub-ticket' }, [
+          h('div', { class: 'fmt-stub-main' }, [
+            h('div', { class: ['fmt-stub-accent', lot.accentClass], 'aria-hidden': 'true' }),
+            h('div', { class: 'fmt-stub-top' }, [
+              h('span', { class: ['fmt-cat-badge', lot.accentClass] }, lot.category),
+              h('span', { class: 'fmt-lot-code' }, `LOT #${lot.lotCode}`),
+              h('span', { class: 'fmt-savings-pill' }, lot.savingsPct),
+            ]),
+            h('div', { class: 'fmt-stub-headline' }, [h('h3', lot.artist), h('p', lot.tour)]),
+            h('div', { class: 'fmt-stub-specs' }, [
+              h('div', [h('small', 'VENUE & CITY'), h('span', `${lot.venue} · ${lot.city}`)]),
+              h('div', [h('small', 'DATE & TIME'), h('span', lot.date)]),
+              h('div', [h('small', 'SEAT ALLOCATION'), h('span', lot.seats)]),
+            ]),
+          ]),
+          h('div', { class: 'fmt-stub-perf', 'aria-hidden': 'true' }, [
+            h('span', { class: 'fmt-notch fmt-notch-top' }),
+            h('span', { class: 'fmt-notch fmt-notch-bot' }),
+          ]),
+          h('div', { class: 'fmt-stub-right' }, [
+            h('div', { class: ['fmt-stub-timer', { urgent: lot.urgent }] }, [
+              h('span', `⏱ ${lot.timeLeft}`),
+              lot.urgent ? h('span', { class: 'fmt-urgent-tag' }, 'CLOSING') : null,
+            ]),
+            h('div', { class: 'fmt-stub-price' }, [
+              h('small', `CURRENT BID (${lot.bids} BIDS)`),
+              h('strong', lot.currentBid),
+              h('span', { class: 'fmt-stub-sub' }, [
+                `Buy ${lot.buyNow} · Face `,
+                h('del', lot.faceValue),
+              ]),
+            ]),
+            h('label', { class: 'fmt-action-btn', for: 'p-auth' }, `Bid ${lot.nextBid} →`),
+            h('div', { class: 'fmt-barcode', 'aria-hidden': 'true' }),
+          ]),
+        ]),
+      ),
+    ),
+
+    h('div', { class: 'fmt-view-table' }, [
+      h('div', { class: 'fmt-ledger-wrap' }, [
+        h('div', { class: 'fmt-ledger-head', 'aria-hidden': 'true' }, [
+          h('span', 'Lot & Event'),
+          h('span', 'Venue & Date'),
+          h('span', 'Seat Allocation'),
+          h('span', 'Demand & Reserve'),
+          h('span', 'Time Left'),
+          h('span', 'Current Bid'),
+          h('span', 'Buy Now / Face'),
+          h('span', 'Action'),
+        ]),
+        ...lots.map((lot) =>
+          h('div', { key: `${props.prefix}-row-${lot.id}`, class: 'fmt-ledger-row' }, [
+            h('div', { class: 'fmt-cell fmt-cell-event' }, [
+              h('div', { class: 'fmt-cell-badges' }, [
+                h('span', { class: 'fmt-lot-code' }, lot.lotCode),
+                h('span', { class: ['fmt-cat-badge', lot.accentClass] }, lot.category),
+              ]),
+              h('strong', lot.artist),
+              h('span', { class: 'fmt-muted' }, lot.tour),
+            ]),
+            h('div', { class: 'fmt-cell fmt-cell-venue' }, [
+              h('span', { class: 'fmt-cell-label' }, 'Venue'),
+              h('strong', `${lot.venue}, ${lot.city}`),
+              h('span', { class: 'fmt-muted' }, lot.date),
+            ]),
+            h('div', { class: 'fmt-cell fmt-cell-seats' }, [
+              h('span', { class: 'fmt-cell-label' }, 'Seats'),
+              h('span', { class: 'fmt-seat-chip' }, lot.seats),
+            ]),
+            h('div', { class: 'fmt-cell fmt-cell-reserve' }, [
+              h('span', { class: 'fmt-cell-label' }, 'Reserve'),
+              h('div', { class: 'fmt-reserve-meta' }, [
+                h('span', `${lot.bids} bids`),
+                h('span', `${lot.reservePct}%`),
+              ]),
+              h('div', { class: 'fmt-mini-bar' }, [
+                h('span', { style: { width: `${lot.reservePct}%` } }),
+              ]),
+            ]),
+            h('div', { class: 'fmt-cell fmt-cell-time' }, [
+              h('span', { class: 'fmt-cell-label' }, 'Time Left'),
+              h('span', { class: ['fmt-timer-badge', { urgent: lot.urgent }] }, lot.timeLeft),
+            ]),
+            h('div', { class: 'fmt-cell fmt-cell-bid' }, [
+              h('span', { class: 'fmt-cell-label' }, 'Current Bid'),
+              h('strong', { class: 'fmt-bid-num' }, lot.currentBid),
+              h('span', { class: 'fmt-savings-text' }, lot.savingsPct),
+            ]),
+            h('div', { class: 'fmt-cell fmt-cell-buy' }, [
+              h('span', { class: 'fmt-cell-label' }, 'Buy Now'),
+              h('span', { class: 'fmt-buy-num' }, lot.buyNow),
+              h('span', { class: 'fmt-muted' }, `Face ${lot.faceValue}`),
+            ]),
+            h('div', { class: 'fmt-cell fmt-cell-action' }, [
+              h('label', { class: 'fmt-action-btn fmt-action-sm', for: 'p-auth' }, `Bid ${lot.nextBid}`),
+            ]),
+          ]),
+        ),
+      ]),
+    ]),
+
+    h(
+      'div',
+      { class: 'fmt-view-posters' },
+      lots.map((lot) =>
+        h('article', { key: `${props.prefix}-poster-${lot.id}`, class: 'fmt-poster-card' }, [
+          h('div', { class: ['fmt-poster-stage', lot.accentClass] }, [
+            h('div', { class: 'fmt-poster-top' }, [
+              h('div', { class: 'fmt-poster-badges' }, [
+                h('span', { class: ['fmt-cat-badge', lot.accentClass] }, lot.category),
+                h('span', { class: 'fmt-lot-code' }, `LOT #${lot.lotCode}`),
+              ]),
+              h('div', { class: 'fmt-date-stamp' }, [h('small', lot.city), h('span', lot.date)]),
+            ]),
+            h('div', { class: 'fmt-poster-center' }, [
+              h('span', { class: 'fmt-poster-venue' }, lot.venue),
+              h('h3', lot.artist),
+              h('p', lot.tour),
+            ]),
+            h('div', { class: 'fmt-poster-foot' }, [
+              h('span', { class: 'fmt-seat-chip' }, lot.seats),
+              h('span', { class: 'fmt-savings-pill' }, lot.savingsPct),
+            ]),
+          ]),
+          h('div', { class: 'fmt-poster-cockpit' }, [
+            h('div', { class: 'fmt-poster-reserve' }, [
+              h('div', { class: 'fmt-poster-reserve-row' }, [
+                h('span', `Reserve ${lot.reservePct}% · ${lot.bids} Verified Bids`),
+                h('span', { class: ['fmt-timer-badge', { urgent: lot.urgent }] }, `⏱ ${lot.timeLeft}`),
+              ]),
+              h('div', { class: 'fmt-progress-track' }, [
+                h('span', { style: { width: `${lot.reservePct}%` } }),
+              ]),
+            ]),
+            h('div', { class: 'fmt-poster-metrics' }, [
+              h('div', { class: 'fmt-poster-metric highlight' }, [
+                h('small', 'Current Bid'),
+                h('strong', lot.currentBid),
+              ]),
+              h('div', { class: 'fmt-poster-metric' }, [
+                h('small', 'Buy Now'),
+                h('strong', lot.buyNow),
+              ]),
+              h('div', { class: 'fmt-poster-metric' }, [
+                h('small', 'Face Value'),
+                h('span', { class: 'fmt-strike' }, lot.faceValue),
+              ]),
+            ]),
+            h('div', { class: 'fmt-poster-actions' }, [
+              h('label', { class: 'fmt-action-btn', for: 'p-auth' }, `Bid ${lot.nextBid} →`),
+              h('label', { class: 'fmt-action-secondary', for: 'p-auth' }, `Buy ${lot.buyNow}`),
+            ]),
+          ]),
+        ]),
+      ),
+    ),
+  ])
 </script>
 
 <template>
@@ -240,6 +432,40 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
         d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6zm10-4v14"
       />
     </symbol>
+
+    <symbol id="icon-fmt-cards" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+      <rect x="13" y="3" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+      <rect x="3" y="13" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+      <rect x="13" y="13" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+    </symbol>
+
+    <symbol id="icon-fmt-stubs" viewBox="0 0 24 24">
+      <path
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8zm13-2v12"
+      />
+    </symbol>
+
+    <symbol id="icon-fmt-table" viewBox="0 0 24 24">
+      <path
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        d="M8 6h13M8 12h13M8 18h13M3 6h1M3 12h1M3 18h1"
+      />
+    </symbol>
+
+    <symbol id="icon-fmt-posters" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="8" height="18" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+      <rect x="13" y="3" width="8" height="18" rx="1.5" fill="none" stroke="currentColor" stroke-width="2" />
+      <path fill="none" stroke="currentColor" stroke-width="2" d="M3 10h8M13 10h8" />
+    </symbol>
   </svg>
 
   <!-- Pure CSS Stateless Controls (Zero JS State Needed) -->
@@ -254,6 +480,11 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
   <input class="sr-control" type="radio" name="auth-mode" id="a-login" checked />
   <input class="sr-control" type="radio" name="auth-mode" id="a-signup" />
 
+  <input class="sr-control" type="radio" name="ticket-format" id="f-cards" checked />
+  <input class="sr-control" type="radio" name="ticket-format" id="f-stubs" />
+  <input class="sr-control" type="radio" name="ticket-format" id="f-table" />
+  <input class="sr-control" type="radio" name="ticket-format" id="f-posters" />
+
   <input class="sr-control" type="checkbox" id="clean-shot" />
 
   <!-- Floating Evaluation Bar for Team Screenshot Switching -->
@@ -264,6 +495,21 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
       <label class="switcher-pill" for="d2">2. Swiss Stub</label>
       <label class="switcher-pill" for="d3">3. Velvet &amp; Gold</label>
       <label class="switcher-pill" for="d4">4. Daylight Arena</label>
+    </div>
+
+    <div class="switcher-divider" aria-hidden="true"></div>
+
+    <div class="switcher-group">
+      <span class="switcher-label">Format:</span>
+      <label
+        v-for="fmt in ticketFormats"
+        :key="'top-' + fmt.id"
+        class="switcher-pill switcher-fmt-pill"
+        :for="fmt.id"
+      >
+        <svg class="fmt-ico" aria-hidden="true"><use :href="fmt.iconId" /></svg>
+        <span>{{ fmt.shortLabel }}</span>
+      </label>
     </div>
 
     <div class="switcher-divider" aria-hidden="true"></div>
@@ -370,16 +616,19 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
               <span class="d1-eyebrow">CLOSING TONIGHT</span>
               <h2 class="d1-h2">Live Concert Auctions</h2>
             </div>
-            <div class="d1-pills">
-              <span class="d1-pill active">All Stages</span>
-              <span class="d1-pill">Arena Tours</span>
-              <span class="d1-pill">Electronic</span>
-              <span class="d1-pill">Festivals</span>
-              <span class="d1-pill">VIP Soundcheck</span>
+            <div class="d1-head-controls">
+              <div class="d1-pills">
+                <span class="d1-pill active">All Stages</span>
+                <span class="d1-pill">Arena Tours</span>
+                <span class="d1-pill">Electronic</span>
+                <span class="d1-pill">Festivals</span>
+                <span class="d1-pill">VIP Soundcheck</span>
+              </div>
+              <FormatSwitcherBar prefix="d1" />
             </div>
           </div>
 
-          <div class="d1-grid">
+          <div class="d1-grid fmt-view-cards">
             <article v-for="lot in lots" :key="'d1-' + lot.id" class="d1-card">
               <div class="d1-card-banner" :class="lot.accentClass">
                 <div class="d1-card-top">
@@ -415,6 +664,8 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
               </div>
             </article>
           </div>
+
+          <TicketFormatViews prefix="d1" />
         </div>
       </section>
 
@@ -592,16 +843,19 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
         <div class="d2-container">
           <div class="d2-filter-bar">
             <h2>ACTIVE TICKET LOTS [06]</h2>
-            <div class="d2-stamps">
-              <span class="d2-stamp d2-stamp-dark">ALL LOTS</span>
-              <span class="d2-stamp">ARENA</span>
-              <span class="d2-stamp">ELECTRONIC</span>
-              <span class="d2-stamp">FESTIVAL</span>
-              <span class="d2-stamp">LAST 60M</span>
+            <div class="d2-filter-controls">
+              <div class="d2-stamps">
+                <span class="d2-stamp d2-stamp-dark">ALL LOTS</span>
+                <span class="d2-stamp">ARENA</span>
+                <span class="d2-stamp">ELECTRONIC</span>
+                <span class="d2-stamp">FESTIVAL</span>
+                <span class="d2-stamp">LAST 60M</span>
+              </div>
+              <FormatSwitcherBar prefix="d2" />
             </div>
           </div>
 
-          <div class="d2-grid">
+          <div class="d2-grid fmt-view-cards">
             <article v-for="lot in lots" :key="'d2-' + lot.id" class="d2-stub-card">
               <div class="d2-stub-card-top">
                 <span class="d2-cat-tag" :class="lot.accentClass">{{ lot.category }}</span>
@@ -641,6 +895,8 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
               </div>
             </article>
           </div>
+
+          <TicketFormatViews prefix="d2" />
         </div>
       </section>
 
@@ -799,15 +1055,21 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
 
       <section id="d3-lots" class="d3-section">
         <div class="d3-container">
-          <div class="d3-cat-bar">
-            <span class="d3-cat active">All Curated Lots</span>
-            <span class="d3-cat">Symphony &amp; Hall</span>
-            <span class="d3-cat">World Tours</span>
-            <span class="d3-cat">Festival Suites</span>
-            <span class="d3-cat">Closing Tonight</span>
+          <div class="d3-lots-header">
+            <div class="d3-cat-bar">
+              <span class="d3-cat active">All Curated Lots</span>
+              <span class="d3-cat">Symphony &amp; Hall</span>
+              <span class="d3-cat">World Tours</span>
+              <span class="d3-cat">Festival Suites</span>
+              <span class="d3-cat">Closing Tonight</span>
+            </div>
+            <div class="d3-format-row">
+              <span class="d3-format-note">Evening Catalogue · 06 Curated Lots</span>
+              <FormatSwitcherBar prefix="d3" />
+            </div>
           </div>
 
-          <div class="d3-grid">
+          <div class="d3-grid fmt-view-cards">
             <article v-for="(lot, idx) in lots" :key="'d3-' + lot.id" class="d3-lot-card">
               <div class="d3-lot-top">
                 <span>LOT 00{{ idx + 2 }}</span>
@@ -838,6 +1100,8 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
               <label class="d3-lot-link" for="p-auth">Submit Bid ({{ lot.nextBid }}) →</label>
             </article>
           </div>
+
+          <TicketFormatViews prefix="d3" />
         </div>
       </section>
 
@@ -1035,18 +1299,21 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
               <span class="d4-chip">Electronic</span>
               <span class="d4-chip">Under $200</span>
             </div>
-            <details class="d4-sort-dropdown">
-              <summary>Sort: Ending Soonest ▾</summary>
-              <ul>
-                <li>Ending Soonest</li>
-                <li>Biggest % Below Face</li>
-                <li>Most Active Bids</li>
-                <li>Lowest Current Bid</li>
-              </ul>
-            </details>
+            <div class="d4-toolbar-right">
+              <FormatSwitcherBar prefix="d4" />
+              <details class="d4-sort-dropdown">
+                <summary>Sort: Ending Soonest ▾</summary>
+                <ul>
+                  <li>Ending Soonest</li>
+                  <li>Biggest % Below Face</li>
+                  <li>Most Active Bids</li>
+                  <li>Lowest Current Bid</li>
+                </ul>
+              </details>
+            </div>
           </div>
 
-          <div class="d4-grid">
+          <div class="d4-grid fmt-view-cards">
             <article v-for="lot in lots" :key="'d4-' + lot.id" class="d4-card">
               <div class="d4-card-head" :class="lot.accentClass">
                 <span class="d4-card-cat">{{ lot.category }}</span>
@@ -1079,6 +1346,8 @@ const oauthProvidersAlt: readonly OAuthProvider[] = [
               </div>
             </article>
           </div>
+
+          <TicketFormatViews prefix="d4" />
         </div>
       </section>
 

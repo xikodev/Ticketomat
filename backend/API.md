@@ -1,7 +1,21 @@
 # Backend API
 
-No API endpoints are currently implemented in this backend.
+Default local base URL: `http://localhost:3000`.
 
-`src/index.ts` is empty, and there is no HTTP server, router, or request handler defined. There are therefore no available API calls, request bodies, or responses to document yet.
+## GET /health
 
-The base URL and listening port have not been configured.
+Returns HTTP `200` with `Content-Type: application/json`:
+
+```json
+{ "status": "ok" }
+```
+
+This checks that the HTTP server responds; it does not check external services.
+No authentication or request body is required. Responses are not cached.
+
+```bash
+curl http://localhost:3000/health
+```
+
+Other methods on `/health` return `405` with `Allow: GET`.
+Unknown paths return `404`. Both errors use JSON with an `error` message.

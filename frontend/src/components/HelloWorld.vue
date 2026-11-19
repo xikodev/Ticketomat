@@ -4,7 +4,9 @@ import Header from "./Header.vue";
 <template>
   <div class="bg-amber-50 flex flex-col min-h-screen">
     <Header />
-    <main class="grow">Text</main>
+    <main class="grow grid-cols-8">
+      <div></div>
+    </main>
     <footer>Some footer</footer>
   </div>
 </template>

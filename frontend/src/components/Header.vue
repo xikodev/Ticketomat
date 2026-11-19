@@ -20,7 +20,7 @@
       <a href="/security" class="hover:underline">Secuirty Measures</a>
     </div>
     <button
-      class="col-span-1 justify-self-end py-3 px-5 bg-primary text-white font-bold rounded-md text-sm border-2 border-black shadow-black shadow-[3px_3px_0px] hover:cursor-pointer hover:-translate-0.5 hover:shadow-[4px_4px_0px] transition-all duration-75"
+      class="col-span-1 justify-self-end py-3 px-5 bg-primary text-white font-bold text-sm border-custom-btn"
     >
       Sign In
     </button>

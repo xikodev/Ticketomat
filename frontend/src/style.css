@@ -3,3 +3,19 @@
 @theme {
   --color-primary: #d9462f;
 }
+@layer components {
+  .border-custom {
+    @apply border-2 border-black shadow-black shadow-[3px_3px_0px] rounded-lg;
+  }
+
+  .border-custom-btn {
+    @apply border-2 border-black shadow-black shadow-[3px_3px_0px] rounded-lg;
+    @apply hover:cursor-pointer hover:-translate-0.5 hover:shadow-[4px_4px_0px] transition-all duration-75;
+  }
+
+  .btn-custom {
+    @apply py-3 px-5 font-semibold;
+    @apply border-2 border-black shadow-black shadow-[3px_3px_0px] rounded-lg;
+    @apply hover:cursor-pointer hover:-translate-0.5 hover:shadow-[4px_4px_0px] transition-all duration-75;
+  }
+}

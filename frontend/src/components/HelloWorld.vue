@@ -1,8 +1,7 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>
-    <h1>Hello world</h1>
+    <h1 class="text-center text-7xl">Hello world</h1>
   </div>
 </template>

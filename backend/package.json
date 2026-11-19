@@ -1,27 +1,27 @@
 {
-    "name": "ticketomat",
-    "version": "1.0.0",
-    "description": "",
-    "type": "module",
-    "main": "dist/index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc",
-        "start": "node dist/index.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/xikodev/Ticketomat.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/xikodev/Ticketomat/issues"
-    },
-    "homepage": "https://github.com/xikodev/Ticketomat#readme",
-    "devDependencies": {
-        "@types/node": "^26.6.6",
-        "typescript": "^7.0.2"
-    }
+  "name": "ticketomat",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xikodev/Ticketomat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xikodev/Ticketomat/issues"
+  },
+  "homepage": "https://github.com/xikodev/Ticketomat#readme",
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
 }

@@ -156,13 +156,6 @@ interface OAuthProvider {
   readonly badge?: string
 }
 
-const oauthProviders: readonly OAuthProvider[] = [
-  { id: 'google', name: 'Continue with Google', iconId: '#icon-google', badge: 'Fastest' },
-  { id: 'apple', name: 'Continue with Apple', iconId: '#icon-apple' },
-  { id: 'spotify', name: 'Continue with Spotify', iconId: '#icon-spotify' },
-  { id: 'discord', name: 'Continue with Discord', iconId: '#icon-discord' },
-]
-
 const oauthProvidersAlt: readonly OAuthProvider[] = [
   { id: 'google', name: 'Google', iconId: '#icon-google', badge: 'Instant' },
   { id: 'apple', name: 'Apple', iconId: '#icon-apple' },
@@ -206,14 +199,14 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
             h('div', { class: ['fmt-stub-accent', lot.accentClass], 'aria-hidden': 'true' }),
             h('div', { class: 'fmt-stub-top' }, [
               h('span', { class: ['fmt-cat-badge', lot.accentClass] }, lot.category),
-              h('span', { class: 'fmt-lot-code' }, `LOT #${lot.lotCode}`),
+              h('span', { class: 'fmt-lot-code' }, `Lot ${lot.lotCode}`),
               h('span', { class: 'fmt-savings-pill' }, lot.savingsPct),
             ]),
             h('div', { class: 'fmt-stub-headline' }, [h('h3', lot.artist), h('p', lot.tour)]),
             h('div', { class: 'fmt-stub-specs' }, [
-              h('div', [h('small', 'VENUE & CITY'), h('span', `${lot.venue} · ${lot.city}`)]),
-              h('div', [h('small', 'DATE & TIME'), h('span', lot.date)]),
-              h('div', [h('small', 'SEAT ALLOCATION'), h('span', lot.seats)]),
+              h('div', [h('small', 'Venue & City'), h('span', `${lot.venue} · ${lot.city}`)]),
+              h('div', [h('small', 'Date & Showtime'), h('span', lot.date)]),
+              h('div', [h('small', 'Seats'), h('span', lot.seats)]),
             ]),
           ]),
           h('div', { class: 'fmt-stub-perf', 'aria-hidden': 'true' }, [
@@ -223,10 +216,10 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
           h('div', { class: 'fmt-stub-right' }, [
             h('div', { class: ['fmt-stub-timer', { urgent: lot.urgent }] }, [
               h('span', `⏱ ${lot.timeLeft}`),
-              lot.urgent ? h('span', { class: 'fmt-urgent-tag' }, 'CLOSING') : null,
+              lot.urgent ? h('span', { class: 'fmt-urgent-tag' }, 'Closing Soon') : null,
             ]),
             h('div', { class: 'fmt-stub-price' }, [
-              h('small', `CURRENT BID (${lot.bids} BIDS)`),
+              h('small', `Current Bid (${lot.bids} bids)`),
               h('strong', lot.currentBid),
               h('span', { class: 'fmt-stub-sub' }, [
                 `Buy ${lot.buyNow} · Face `,
@@ -243,10 +236,10 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
     h('div', { class: 'fmt-view-table' }, [
       h('div', { class: 'fmt-ledger-wrap' }, [
         h('div', { class: 'fmt-ledger-head', 'aria-hidden': 'true' }, [
-          h('span', 'Lot & Event'),
-          h('span', 'Venue & Date'),
-          h('span', 'Seat Allocation'),
-          h('span', 'Demand & Reserve'),
+          h('span', 'Event & Lot'),
+          h('span', 'Venue & Showtime'),
+          h('span', 'Seats'),
+          h('span', 'Bids & Reserve'),
           h('span', 'Time Left'),
           h('span', 'Current Bid'),
           h('span', 'Buy Now / Face'),
@@ -256,14 +249,14 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
           h('div', { key: `${props.prefix}-row-${lot.id}`, class: 'fmt-ledger-row' }, [
             h('div', { class: 'fmt-cell fmt-cell-event' }, [
               h('div', { class: 'fmt-cell-badges' }, [
-                h('span', { class: 'fmt-lot-code' }, lot.lotCode),
+                h('span', { class: 'fmt-lot-code' }, `Lot ${lot.lotCode}`),
                 h('span', { class: ['fmt-cat-badge', lot.accentClass] }, lot.category),
               ]),
               h('strong', lot.artist),
               h('span', { class: 'fmt-muted' }, lot.tour),
             ]),
             h('div', { class: 'fmt-cell fmt-cell-venue' }, [
-              h('span', { class: 'fmt-cell-label' }, 'Venue'),
+              h('span', { class: 'fmt-cell-label' }, 'Venue & Showtime'),
               h('strong', `${lot.venue}, ${lot.city}`),
               h('span', { class: 'fmt-muted' }, lot.date),
             ]),
@@ -312,7 +305,7 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
             h('div', { class: 'fmt-poster-top' }, [
               h('div', { class: 'fmt-poster-badges' }, [
                 h('span', { class: ['fmt-cat-badge', lot.accentClass] }, lot.category),
-                h('span', { class: 'fmt-lot-code' }, `LOT #${lot.lotCode}`),
+                h('span', { class: 'fmt-lot-code' }, `Lot ${lot.lotCode}`),
               ]),
               h('div', { class: 'fmt-date-stamp' }, [h('small', lot.city), h('span', lot.date)]),
             ]),
@@ -359,6 +352,290 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
       ),
     ),
   ])
+
+interface SwissVariantRule {
+  readonly step: string
+  readonly title: string
+  readonly desc: string
+}
+
+interface SwissStubVariant {
+  readonly id: string
+  readonly prefix: 'd2' | 'd3' | 'd4' | 'd5'
+  readonly canvasClass: 'design-2' | 'design-3' | 'design-4' | 'design-5'
+  readonly marquee: string
+  readonly brandMark: string
+  readonly brandName: string
+  readonly navLinks: readonly { readonly label: string; readonly anchor: 'lots' | 'rules' }[]
+  readonly navCta: string
+  readonly heroBadge: string
+  readonly heroSeries: string
+  readonly heroHeadlineTop: string
+  readonly heroHeadlineBottom: string
+  readonly heroEventTitle: string
+  readonly heroEventMeta: string
+  readonly heroPrimaryCta: string
+  readonly heroSecondaryCta: string
+  readonly heroStubLot: string
+  readonly heroStubBids: string
+  readonly heroPriceLabel: string
+  readonly heroDiscountNote: string
+  readonly heroTimerText: string
+  readonly heroBidCta: string
+  readonly lotsTitle: string
+  readonly filterChips: readonly string[]
+  readonly cardBidLabel: string
+  readonly rules: readonly SwissVariantRule[]
+  readonly authBackLabel: string
+  readonly authBadge: string
+  readonly authTitle: string
+  readonly authSubtitle: string
+  readonly authNameLabel: string
+  readonly authNamePlaceholder: string
+  readonly authEmailPlaceholder: string
+  readonly authLoginBtn: string
+  readonly authSignupBtn: string
+  readonly authFooterNote: string
+}
+
+const swissVariants: readonly SwissStubVariant[] = [
+  {
+    id: 'velvet-swiss',
+    prefix: 'd2',
+    canvasClass: 'design-2',
+    marquee:
+      'Verified Fan Ticket Exchange · Zero Bot Scalpers · Instant OAuth 2.0 Sign-In · +2 Min Anti-Snipe Protection',
+    brandMark: 'TK',
+    brandName: 'Ticketomat',
+    navLinks: [
+      { label: 'Live Auctions', anchor: 'lots' },
+      { label: 'Festivals', anchor: 'lots' },
+      { label: 'Buyer Guarantee', anchor: 'rules' },
+    ],
+    navCta: 'Sign In · Fan Pass',
+    heroBadge: 'Featured Auction',
+    heroSeries: '2026 Arena Tour · 2 Tickets',
+    heroHeadlineTop: 'Outbid the scalpers.',
+    heroHeadlineBottom: 'Claim the front row.',
+    heroEventTitle: 'Radiohead — 25th Anniversary World Tour',
+    heroEventMeta: 'The O2 Arena, London · Sat, Nov 28 · Sec 102, Row D (2 Passes)',
+    heroPrimaryCta: 'Browse Live Tickets ↓',
+    heroSecondaryCta: 'Verify via OAuth 2.0',
+    heroStubLot: 'Lot TK-4092',
+    heroStubBids: '34 bids',
+    heroPriceLabel: 'Highest Bid',
+    heroDiscountNote: '29% below $260 face value',
+    heroTimerText: 'Ends in 42m 19s',
+    heroBidCta: 'Place Bid $195 →',
+    lotsTitle: 'Live Ticket Auctions',
+    filterChips: ['All Shows', 'Arena Tours', 'Electronic', 'Festivals', 'Ending Soon'],
+    cardBidLabel: 'Place Bid',
+    rules: [
+      {
+        step: 'Step 1',
+        title: '1-Click Fan Verification',
+        desc: 'Sign in once with Google, Apple, Spotify, or GitHub so every auction stays 100% bot-free.',
+      },
+      {
+        step: 'Step 2',
+        title: 'Escrow Ticket Guarantee',
+        desc: 'Your funds stay protected in escrow until verified mobile tickets land safely in your Ticketomat wallet.',
+      },
+      {
+        step: 'Step 3',
+        title: 'Fair Overtime Clock',
+        desc: 'Any bid in the final 2 minutes automatically adds +2 minutes so real fans never lose to last-second scripts.',
+      },
+    ],
+    authBackLabel: '← Back to Auctions',
+    authBadge: 'Verified Fan Pass · OAuth 2.0',
+    authTitle: 'Ticketomat Fan Pass',
+    authSubtitle: 'Sign in once with your favorite account to unlock live bidding & instant mobile transfers.',
+    authNameLabel: 'Full Name',
+    authNamePlaceholder: 'Alex Rivera',
+    authEmailPlaceholder: 'alex@example.com',
+    authLoginBtn: 'Sign In to Bid →',
+    authSignupBtn: 'Create Verified Pass →',
+    authFooterNote: 'Admit One · Verified Fan Pass · Ticketomat Exchange 2026',
+  },
+  {
+    id: 'kunsthalle-stub',
+    prefix: 'd3',
+    canvasClass: 'design-3',
+    marquee:
+      'Curated Concert & Festival Exchange · Every Fan Verified · Protected Escrow Transfers · Fair Overtime Clock',
+    brandMark: 'T',
+    brandName: 'Ticketomat',
+    navLinks: [
+      { label: 'Box Office', anchor: 'lots' },
+      { label: 'Symphony & Festivals', anchor: 'lots' },
+      { label: 'Guarantee', anchor: 'rules' },
+    ],
+    navCta: 'Member Sign In',
+    heroBadge: 'Tonight’s Spotlight',
+    heroSeries: 'Season 2026 · Admit Two',
+    heroHeadlineTop: 'Front-row seats,',
+    heroHeadlineBottom: 'without the scalpers.',
+    heroEventTitle: 'Radiohead — 25th Anniversary World Tour',
+    heroEventMeta: 'The O2 Arena, London · Sat, Nov 28 · Sec 102, Row D (2 Passes)',
+    heroPrimaryCta: 'Explore Concert Lots ↓',
+    heroSecondaryCta: 'Member Verification',
+    heroStubLot: 'Lot TK-4092',
+    heroStubBids: '34 verified bids',
+    heroPriceLabel: 'Current High Bid',
+    heroDiscountNote: 'Save 29% vs $260 face value',
+    heroTimerText: 'Closes in 42m 19s',
+    heroBidCta: 'Place Bid $195 →',
+    lotsTitle: 'Concert Hall & Tour Lots',
+    filterChips: ['All Performances', 'Arena', 'Symphony', 'Festivals', 'Closing Soon'],
+    cardBidLabel: 'Bid',
+    rules: [
+      {
+        step: 'Step 1',
+        title: 'Single-Identity Gate',
+        desc: 'Quick OAuth 2.0 sign-in through Google, Apple, Spotify, or GitHub ensures real fans hold every seat.',
+      },
+      {
+        step: 'Step 2',
+        title: 'Insured Box-Office Escrow',
+        desc: 'Payments settle only after official venue barcodes clear cleanly into your verified Ticketomat pass.',
+      },
+      {
+        step: 'Step 3',
+        title: 'Graceful Overtime Rule',
+        desc: 'Bids placed in the closing two minutes extend the curtain clock by +2 minutes for fair competition.',
+      },
+    ],
+    authBackLabel: '← Return to Box Office',
+    authBadge: 'Patron Admission · OAuth 2.0',
+    authTitle: 'Concert Patron Pass',
+    authSubtitle: 'Authenticate once to place verified bids and receive guaranteed box-office transfers.',
+    authNameLabel: 'Patron Name',
+    authNamePlaceholder: 'Clara Lindqvist',
+    authEmailPlaceholder: 'clara@example.com',
+    authLoginBtn: 'Enter Box Office →',
+    authSignupBtn: 'Issue Patron Pass →',
+    authFooterNote: 'Season 2026 · Protected Admission · Ticketomat Box Office',
+  },
+  {
+    id: 'festival-pop-stub',
+    prefix: 'd4',
+    canvasClass: 'design-4',
+    marquee:
+      'Live Music Fan Exchange · Fair Prices Below Face Value · 1-Click OAuth Sign-In · Human-First Bidding',
+    brandMark: '★',
+    brandName: 'Ticketomat',
+    navLinks: [
+      { label: 'Live Drops', anchor: 'lots' },
+      { label: 'Festival Passes', anchor: 'lots' },
+      { label: 'Fair Bidding', anchor: 'rules' },
+    ],
+    navCta: 'Get Fan Pass',
+    heroBadge: 'Hot Auction',
+    heroSeries: '2026 Tour · 2 Verified Passes',
+    heroHeadlineTop: 'Skip the bots.',
+    heroHeadlineBottom: 'Get in the pit.',
+    heroEventTitle: 'Radiohead — 25th Anniversary World Tour',
+    heroEventMeta: 'The O2 Arena, London · Sat, Nov 28 · Sec 102, Row D (2 Passes)',
+    heroPrimaryCta: 'See Live Drops ↓',
+    heroSecondaryCta: '1-Click OAuth Sign-In',
+    heroStubLot: 'Lot TK-4092',
+    heroStubBids: '34 bids',
+    heroPriceLabel: 'Leading Bid',
+    heroDiscountNote: '29% off $260 face value',
+    heroTimerText: '42m 19s left',
+    heroBidCta: 'Bid $195 Now →',
+    lotsTitle: 'Festival & Arena Drops',
+    filterChips: ['All Drops', 'Arena', 'Electronic', 'VIP Festivals', 'Last Hour'],
+    cardBidLabel: 'Bid',
+    rules: [
+      {
+        step: 'Step 1',
+        title: 'Instant Fan Wristband',
+        desc: 'Connect Google, Apple, Spotify, or GitHub in seconds to keep ticket scalpers and bots out.',
+      },
+      {
+        step: 'Step 2',
+        title: '100% Transfer Escrow',
+        desc: 'Your payment stays safely held until your mobile passes or festival wristbands are confirmed yours.',
+      },
+      {
+        step: 'Step 3',
+        title: 'Anti-Snipe Overtime',
+        desc: 'Late bids within 2 minutes add +2 minutes to the countdown so fans can respond without stress.',
+      },
+    ],
+    authBackLabel: '← Back to Drops',
+    authBadge: 'VIP Fan Wristband · OAuth 2.0',
+    authTitle: 'Festival Fan Pass',
+    authSubtitle: 'Unlock live drops, instant bid alerts, and verified mobile wristband transfers.',
+    authNameLabel: 'Your Name',
+    authNamePlaceholder: 'Maya Chen',
+    authEmailPlaceholder: 'maya@example.com',
+    authLoginBtn: 'Jump Into Auctions →',
+    authSignupBtn: 'Claim Fan Pass →',
+    authFooterNote: 'Admit Two · Fan-to-Fan Festival Pass · Ticketomat 2026',
+  },
+  {
+    id: 'letterpress-stub',
+    prefix: 'd5',
+    canvasClass: 'design-5',
+    marquee:
+      'Box-Office Direct Exchange · Verified Real Fans Only · Escrow Ticket Protection · +2 Min Final Call Rule',
+    brandMark: 'TM',
+    brandName: 'Ticketomat',
+    navLinks: [
+      { label: 'All Tickets', anchor: 'lots' },
+      { label: 'Festival Passes', anchor: 'lots' },
+      { label: 'Escrow Rules', anchor: 'rules' },
+    ],
+    navCta: 'Sign In',
+    heroBadge: 'Headliner Lot',
+    heroSeries: 'London 2026 · 2 Seated Passes',
+    heroHeadlineTop: 'Real concert tickets.',
+    heroHeadlineBottom: 'Honest fan prices.',
+    heroEventTitle: 'Radiohead — 25th Anniversary World Tour',
+    heroEventMeta: 'The O2 Arena, London · Sat, Nov 28 · Sec 102, Row D (2 Passes)',
+    heroPrimaryCta: 'View Active Stubs ↓',
+    heroSecondaryCta: 'Verify Fan Account',
+    heroStubLot: 'Lot TK-4092',
+    heroStubBids: '34 bids',
+    heroPriceLabel: 'Current Bid',
+    heroDiscountNote: '$260 Face Value · Save 29%',
+    heroTimerText: 'Ends in 42m 19s',
+    heroBidCta: 'Place Bid $195 →',
+    lotsTitle: 'Available Ticket Stubs',
+    filterChips: ['All Stubs', 'Arena Shows', 'Club Nights', 'Festivals', 'Final Call'],
+    cardBidLabel: 'Place Bid',
+    rules: [
+      {
+        step: 'Step 1',
+        title: 'Trusted Fan Sign-In',
+        desc: 'One quick OAuth 2.0 check via Google, Apple, Spotify, or GitHub verifies every bidder on the floor.',
+      },
+      {
+        step: 'Step 2',
+        title: 'Box-Office Escrow',
+        desc: 'We hold funds securely until authentic venue tickets are delivered directly to your Ticketomat pass.',
+      },
+      {
+        step: 'Step 3',
+        title: 'Final Call Extension',
+        desc: 'Every bid placed in the last 120 seconds resets the timer by +2 minutes so humans beat automated bots.',
+      },
+    ],
+    authBackLabel: '← Back to Tickets',
+    authBadge: 'Box-Office Pass · OAuth 2.0',
+    authTitle: 'Box-Office Fan Pass',
+    authSubtitle: 'Sign in once with a trusted account to bid on verified tickets below face value.',
+    authNameLabel: 'Full Name',
+    authNamePlaceholder: 'Julian Brooks',
+    authEmailPlaceholder: 'julian@example.com',
+    authLoginBtn: 'Enter Ticket Exchange →',
+    authSignupBtn: 'Activate Fan Pass →',
+    authFooterNote: 'Archival Ticket Stock · Verified Fan Exchange · Ticketomat 2026',
+  },
+]
 </script>
 
 <template>
@@ -473,6 +750,7 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
   <input class="sr-control" type="radio" name="design" id="d2" />
   <input class="sr-control" type="radio" name="design" id="d3" />
   <input class="sr-control" type="radio" name="design" id="d4" />
+  <input class="sr-control" type="radio" name="design" id="d5" />
 
   <input class="sr-control" type="radio" name="page" id="p-home" checked />
   <input class="sr-control" type="radio" name="page" id="p-auth" />
@@ -491,10 +769,11 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
   <nav class="preview-switcher" aria-label="Design Evaluation Switcher">
     <div class="switcher-group">
       <span class="switcher-label">Concept:</span>
-      <label class="switcher-pill" for="d1">1. Neon Encore</label>
-      <label class="switcher-pill" for="d2">2. Swiss Stub</label>
-      <label class="switcher-pill" for="d3">3. Velvet &amp; Gold</label>
-      <label class="switcher-pill" for="d4">4. Daylight Arena</label>
+      <label class="switcher-pill" for="d1">1. Swiss Stub (Original)</label>
+      <label class="switcher-pill" for="d2">2. Velvet Swiss</label>
+      <label class="switcher-pill" for="d3">3. Kunsthalle Stub</label>
+      <label class="switcher-pill" for="d4">4. Festival Pop Stub</label>
+      <label class="switcher-pill" for="d5">5. Letterpress Stub</label>
     </div>
 
     <div class="switcher-divider" aria-hidden="true"></div>
@@ -527,139 +806,124 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
   </nav>
 
   <!-- =======================================================================
-       DESIGN 1: NEON ENCORE (Dark Concert & Nightlife Pulse)
+       DESIGN 1: SWISS STUB (Original Reference — Neo-Brutalist Perforated Ticket Stub)
        ======================================================================= -->
   <main class="design-canvas design-1">
     <!-- DESIGN 1: HOMEPAGE -->
     <section class="view-home">
-      <div class="d1-topbar">
-        <span class="d1-live-dot"></span>
-        LIVE ENCORE DROP: 142 Verified Arena &amp; Festival Auctions Closing Tonight · Zero Scalper Bots
+      <div class="d1-marquee">
+        ★ TICKETOMAT LIVE AUCTION EXCHANGE ★ ZERO BOT SCALPERS ★ OAUTH 2.0 VERIFIED FANS ★ ANTI-SNIPE +2M TIMER ★
       </div>
 
       <header class="d1-nav">
         <div class="d1-container d1-nav-inner">
           <div class="d1-brand">
-            <svg class="d1-brand-icon"><use href="#icon-ticket" /></svg>
-            <span>TICKET<strong>OMAT</strong></span>
+            <span class="d1-brand-box">TK</span>
+            <span>TICKETOMAT<sup>®</sup></span>
           </div>
           <nav class="d1-links">
-            <a href="#d1-lots">Live Bids</a>
-            <a href="#d1-lots">Arena Tours</a>
-            <a href="#d1-lots">Festivals</a>
-            <a href="#d1-how">How It Works</a>
+            <a href="#d1-lots">[01] LIVE STUBS</a>
+            <a href="#d1-lots">[02] FESTIVALS</a>
+            <a href="#d1-rules">[03] BID RULES</a>
           </nav>
-          <div class="d1-nav-actions">
-            <label class="d1-btn-ghost" for="p-auth">Log In</label>
-            <label class="d1-btn-neon" for="p-auth">Connect OAuth 2.0</label>
-          </div>
+          <label class="d1-btn-lime" for="p-auth">SIGN IN / OAUTH 2.0 →</label>
         </div>
       </header>
 
       <section class="d1-hero">
-        <div class="d1-glow d1-glow-1" aria-hidden="true"></div>
-        <div class="d1-glow d1-glow-2" aria-hidden="true"></div>
-
-        <div class="d1-container d1-hero-grid">
-          <div class="d1-hero-copy">
-            <span class="d1-eyebrow">VERIFIED FAN AUCTIONS · ESCROW PROTECTED</span>
-            <h1 class="d1-h1">Bid Live on Sold-Out Concerts.</h1>
-            <p class="d1-lead">
-              Real-time ticket auctions without automated scalper markups. Authenticate via OAuth 2.0,
-              place transparent bids, and receive instant mobile transfer.
-            </p>
-            <div class="d1-hero-cta">
-              <a class="d1-btn-neon d1-btn-lg" href="#d1-lots">Explore Live Lots</a>
-              <label class="d1-btn-ghost d1-btn-lg" for="p-auth">Sign Up to Bid</label>
+        <div class="d1-container">
+          <div class="d1-ticket-hero">
+            <div class="d1-ticket-main">
+              <div class="d1-ticket-meta">
+                <span class="d1-stamp d1-stamp-orange">FEATURED AUCTION</span>
+                <span class="d1-mono">SERIES 2026 // ADMIT TWO</span>
+              </div>
+              <h1>OUTBID THE SCALPERS.<br />CLAIM THE FRONT ROW.</h1>
+              <p>
+                <strong>RADIOHEAD — 25TH ANNIVERSARY ARENA TOUR</strong><br />
+                THE O2 ARENA, LONDON · SAT NOV 28 · SEC 102, ROW D (2X PASSES)
+              </p>
+              <div class="d1-hero-actions">
+                <a class="d1-btn-black" href="#d1-lots">BROWSE ALL STUBS ↓</a>
+                <label class="d1-btn-white" for="p-auth">VERIFY VIA OAUTH 2.0</label>
+              </div>
             </div>
-            <div class="d1-hero-stats">
-              <div><strong>$48 avg</strong><span>Saved vs Resale</span></div>
-              <div><strong>99.8%</strong><span>Instant NFC Delivery</span></div>
-              <div><strong>OAuth 2.0</strong><span>Anti-Bot Bidder Lock</span></div>
+
+            <div class="d1-ticket-perf" aria-hidden="true">
+              <span class="d1-notch d1-notch-top"></span>
+              <span class="d1-notch d1-notch-bot"></span>
+            </div>
+
+            <div class="d1-ticket-stub">
+              <div class="d1-stub-head">
+                <span>LOT #TK-4092</span>
+                <span>34 BIDS</span>
+              </div>
+              <div class="d1-stub-price">
+                <small>HIGHEST BID</small>
+                <strong>$185</strong>
+                <span>FACE VALUE $260 (-29%)</span>
+              </div>
+              <div class="d1-stub-timer">CLOSES IN 00:42:19</div>
+              <label class="d1-btn-lime d1-btn-block" for="p-auth">QUICK BID +$10 →</label>
+              <div class="d1-barcode" aria-hidden="true"></div>
             </div>
           </div>
-
-          <article class="d1-spotlight">
-            <div class="d1-spotlight-head">
-              <span class="d1-badge-live">● SPOTLIGHT LOT · 28 BIDS</span>
-              <span class="d1-mono-tag">LOT #SP-901</span>
-            </div>
-            <div class="d1-spotlight-stage">
-              <span class="d1-stage-genre">ELECTRONIC · LAS VEGAS</span>
-              <h2>Daft Punk Tribute: One More Time</h2>
-              <p>Sphere Las Vegas · Sat, Dec 19 · Floor GA Pit (2 Tickets)</p>
-            </div>
-            <div class="d1-spotlight-metrics">
-              <div>
-                <span class="d1-metric-label">Current High Bid</span>
-                <strong class="d1-metric-val">$240</strong>
-                <span class="d1-metric-sub">Face Value $420</span>
-              </div>
-              <div>
-                <span class="d1-metric-label">Closes In</span>
-                <strong class="d1-timer">01h : 18m : 42s</strong>
-                <span class="d1-metric-sub">Auto-extends +2m on snipe</span>
-              </div>
-            </div>
-            <div class="d1-spotlight-actions">
-              <label class="d1-btn-neon d1-btn-full" for="p-auth">Bid $250 Now</label>
-              <label class="d1-btn-glass" for="p-auth">Buy Now $360</label>
-            </div>
-          </article>
         </div>
       </section>
 
       <section id="d1-lots" class="d1-section">
         <div class="d1-container">
-          <div class="d1-section-head">
-            <div>
-              <span class="d1-eyebrow">CLOSING TONIGHT</span>
-              <h2 class="d1-h2">Live Concert Auctions</h2>
-            </div>
-            <div class="d1-head-controls">
-              <div class="d1-pills">
-                <span class="d1-pill active">All Stages</span>
-                <span class="d1-pill">Arena Tours</span>
-                <span class="d1-pill">Electronic</span>
-                <span class="d1-pill">Festivals</span>
-                <span class="d1-pill">VIP Soundcheck</span>
+          <div class="d1-filter-bar">
+            <h2>ACTIVE TICKET LOTS [06]</h2>
+            <div class="d1-filter-controls">
+              <div class="d1-stamps">
+                <span class="d1-stamp d1-stamp-dark">ALL LOTS</span>
+                <span class="d1-stamp">ARENA</span>
+                <span class="d1-stamp">ELECTRONIC</span>
+                <span class="d1-stamp">FESTIVAL</span>
+                <span class="d1-stamp">LAST 60M</span>
               </div>
               <FormatSwitcherBar prefix="d1" />
             </div>
           </div>
 
           <div class="d1-grid fmt-view-cards">
-            <article v-for="lot in lots" :key="'d1-' + lot.id" class="d1-card">
-              <div class="d1-card-banner" :class="lot.accentClass">
-                <div class="d1-card-top">
-                  <span class="d1-chip">{{ lot.category }}</span>
-                  <span class="d1-chip-time" :class="{ urgent: lot.urgent }">
-                    ⏱ {{ lot.timeLeft }}
-                  </span>
-                </div>
-                <div class="d1-card-artist">
-                  <h3>{{ lot.artist }}</h3>
-                  <p>{{ lot.tour }}</p>
+            <article v-for="lot in lots" :key="'d1-' + lot.id" class="d1-stub-card">
+              <div class="d1-stub-card-top">
+                <span class="d1-cat-tag" :class="lot.accentClass">{{ lot.category }}</span>
+                <span class="d1-mono">LOT #{{ lot.lotCode }}</span>
+              </div>
+              <div class="d1-stub-card-body">
+                <h3>{{ lot.artist }}</h3>
+                <p class="d1-tour">{{ lot.tour }}</p>
+                <div class="d1-stub-specs">
+                  <div><strong>VENUE:</strong> {{ lot.venue }}, {{ lot.city }}</div>
+                  <div><strong>DATE:</strong> {{ lot.date }}</div>
+                  <div><strong>SEAT:</strong> {{ lot.seats }}</div>
                 </div>
               </div>
-              <div class="d1-card-body">
-                <div class="d1-card-meta">
-                  <span>{{ lot.venue }} · {{ lot.city }}</span>
-                  <span>{{ lot.date }}</span>
-                </div>
-                <div class="d1-seat-pill">{{ lot.seats }}</div>
-                <div class="d1-bid-row">
+              <div class="d1-card-perf" aria-hidden="true">
+                <span class="d1-side-notch left"></span>
+                <span class="d1-side-notch right"></span>
+              </div>
+              <div class="d1-stub-card-foot">
+                <div class="d1-price-box">
                   <div>
-                    <small>Current Bid ({{ lot.bids }} bids)</small>
+                    <small>BID ({{ lot.bids }})</small>
                     <strong>{{ lot.currentBid }}</strong>
                   </div>
-                  <div class="d1-bid-right">
-                    <small>Buy Now</small>
+                  <div>
+                    <small>CLOSES</small>
+                    <span class="d1-mono">{{ lot.timeLeft }}</span>
+                  </div>
+                  <div>
+                    <small>BUY NOW</small>
                     <span>{{ lot.buyNow }}</span>
                   </div>
                 </div>
-                <label class="d1-btn-neon d1-btn-full" for="p-auth">
-                  Place Bid ({{ lot.nextBid }})
+                <label class="d1-btn-black d1-btn-block" for="p-auth">
+                  PLACE BID {{ lot.nextBid }} ↗
                 </label>
               </div>
             </article>
@@ -669,250 +933,19 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
         </div>
       </section>
 
-      <section id="d1-how" class="d1-section d1-how-section">
-        <div class="d1-container">
-          <div class="d1-how-grid">
-            <div class="d1-how-card">
-              <span class="d1-step">01</span>
-              <h3>OAuth 2.0 Identity Lock</h3>
-              <p>Sign in with Google, Apple, Spotify, or Discord. One verified fan per account stops scalper bots cold.</p>
-            </div>
-            <div class="d1-how-card">
-              <span class="d1-step">02</span>
-              <h3>Transparent Live Bidding</h3>
-              <p>Watch real-time bid depth against retail face value. Two-minute anti-snipe extensions keep closing fair.</p>
-            </div>
-            <div class="d1-how-card">
-              <span class="d1-step">03</span>
-              <h3>Escrow &amp; Instant Transfer</h3>
-              <p>Funds stay locked in escrow until verified barcodes or NFC passes land in your Ticketomat wallet.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <!-- DESIGN 1: LOGIN / SIGNUP WITH OAUTH 2.0 -->
-    <section class="view-auth d1-auth-wrap">
-      <div class="d1-glow d1-glow-1" aria-hidden="true"></div>
-      <div class="d1-glow d1-glow-2" aria-hidden="true"></div>
-
-      <div class="d1-auth-card">
-        <div class="d1-auth-visual">
-          <label class="d1-back-link" for="p-home">← Back to Live Auctions</label>
-          <div class="d1-auth-brand">
-            <svg class="d1-brand-icon"><use href="#icon-ticket" /></svg>
-            <span>TICKET<strong>OMAT</strong></span>
-          </div>
-          <div class="d1-auth-quote">
-            <span class="d1-badge-live">● OAUTH 2.0 VERIFIED BIDDING</span>
-            <h2>Front-row access without the bot war.</h2>
-            <p>
-              “Scored two Radiohead floor tickets 29% below face value in the final 40 seconds.
-              Signed in with Spotify and the NFC passes arrived instantly.”
-            </p>
-            <div class="d1-auth-trust">
-              <span><svg class="inline-ico"><use href="#icon-shield" /></svg> PKCE OAuth 2.0 Escrow</span>
-              <span>100% Real-Fan Marketplace</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="d1-auth-form-pane">
-          <div class="d1-auth-tabs">
-            <label class="auth-tab" for="a-login">Log In</label>
-            <label class="auth-tab" for="a-signup">Sign Up</label>
-          </div>
-
-          <h3 class="login-only">Welcome back to the pit</h3>
-          <h3 class="signup-only">Create your bidder pass</h3>
-          <p class="d1-auth-sub">Connect an OAuth 2.0 provider for instant verified bidding.</p>
-
-          <div class="d1-oauth-stack">
-            <button
-              v-for="provider in oauthProviders"
-              :key="'d1-oa-' + provider.id"
-              type="button"
-              class="d1-oauth-btn"
-            >
-              <svg class="oauth-svg"><use :href="provider.iconId" /></svg>
-              <span>{{ provider.name }}</span>
-              <span v-if="provider.badge" class="d1-oauth-badge">OAuth 2.0</span>
-            </button>
-          </div>
-
-          <div class="d1-divider"><span>or continue with email</span></div>
-
-          <form class="d1-form" @submit.prevent>
-            <label class="d1-field signup-only">
-              <span>Full Name / Bidder Handle</span>
-              <input type="text" placeholder="Alex Mercer (@frontrow_alex)" />
-            </label>
-            <label class="d1-field">
-              <span>Email Address</span>
-              <input type="email" placeholder="alex@concertfan.io" />
-            </label>
-            <label class="d1-field">
-              <span>Password</span>
-              <input type="password" placeholder="••••••••••••" />
-            </label>
-            <div class="d1-form-row login-only">
-              <label class="d1-check"><input type="checkbox" checked /> Keep me logged in</label>
-              <a href="#forgot" @click.prevent>Forgot password?</a>
-            </div>
-            <button type="button" class="d1-btn-neon d1-btn-full d1-btn-lg login-only">
-              Sign In &amp; Enter Auctions
-            </button>
-            <button type="button" class="d1-btn-neon d1-btn-full d1-btn-lg signup-only">
-              Create Verified Account
-            </button>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- =======================================================================
-       DESIGN 2: SWISS STUB (Neo-Brutalist Perforated Physical Ticket Stub)
-       ======================================================================= -->
-  <main class="design-canvas design-2">
-    <!-- DESIGN 2: HOMEPAGE -->
-    <section class="view-home">
-      <div class="d2-marquee">
-        ★ TICKETOMAT LIVE AUCTION EXCHANGE ★ ZERO BOT SCALPERS ★ OAUTH 2.0 VERIFIED FANS ★ ANTI-SNIPE +2M TIMER ★
-      </div>
-
-      <header class="d2-nav">
-        <div class="d2-container d2-nav-inner">
-          <div class="d2-brand">
-            <span class="d2-brand-box">TK</span>
-            <span>TICKETOMAT<sup>®</sup></span>
-          </div>
-          <nav class="d2-links">
-            <a href="#d2-lots">[01] LIVE STUBS</a>
-            <a href="#d2-lots">[02] FESTIVALS</a>
-            <a href="#d2-rules">[03] BID RULES</a>
-          </nav>
-          <label class="d2-btn-lime" for="p-auth">SIGN IN / OAUTH 2.0 →</label>
-        </div>
-      </header>
-
-      <section class="d2-hero">
-        <div class="d2-container">
-          <div class="d2-ticket-hero">
-            <div class="d2-ticket-main">
-              <div class="d2-ticket-meta">
-                <span class="d2-stamp d2-stamp-orange">FEATURED AUCTION</span>
-                <span class="d2-mono">SERIES 2026 // ADMIT TWO</span>
-              </div>
-              <h1>OUTBID THE SCALPERS.<br />CLAIM THE FRONT ROW.</h1>
-              <p>
-                <strong>RADIOHEAD — 25TH ANNIVERSARY ARENA TOUR</strong><br />
-                THE O2 ARENA, LONDON · SAT NOV 28 · SEC 102, ROW D (2X PASSES)
-              </p>
-              <div class="d2-hero-actions">
-                <a class="d2-btn-black" href="#d2-lots">BROWSE ALL STUBS ↓</a>
-                <label class="d2-btn-white" for="p-auth">VERIFY VIA OAUTH 2.0</label>
-              </div>
-            </div>
-
-            <div class="d2-ticket-perf" aria-hidden="true">
-              <span class="d2-notch d2-notch-top"></span>
-              <span class="d2-notch d2-notch-bot"></span>
-            </div>
-
-            <div class="d2-ticket-stub">
-              <div class="d2-stub-head">
-                <span>LOT #TK-4092</span>
-                <span>34 BIDS</span>
-              </div>
-              <div class="d2-stub-price">
-                <small>HIGHEST BID</small>
-                <strong>$185</strong>
-                <span>FACE VALUE $260 (-29%)</span>
-              </div>
-              <div class="d2-stub-timer">CLOSES IN 00:42:19</div>
-              <label class="d2-btn-lime d2-btn-block" for="p-auth">QUICK BID +$10 →</label>
-              <div class="d2-barcode" aria-hidden="true"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="d2-lots" class="d2-section">
-        <div class="d2-container">
-          <div class="d2-filter-bar">
-            <h2>ACTIVE TICKET LOTS [06]</h2>
-            <div class="d2-filter-controls">
-              <div class="d2-stamps">
-                <span class="d2-stamp d2-stamp-dark">ALL LOTS</span>
-                <span class="d2-stamp">ARENA</span>
-                <span class="d2-stamp">ELECTRONIC</span>
-                <span class="d2-stamp">FESTIVAL</span>
-                <span class="d2-stamp">LAST 60M</span>
-              </div>
-              <FormatSwitcherBar prefix="d2" />
-            </div>
-          </div>
-
-          <div class="d2-grid fmt-view-cards">
-            <article v-for="lot in lots" :key="'d2-' + lot.id" class="d2-stub-card">
-              <div class="d2-stub-card-top">
-                <span class="d2-cat-tag" :class="lot.accentClass">{{ lot.category }}</span>
-                <span class="d2-mono">LOT #{{ lot.lotCode }}</span>
-              </div>
-              <div class="d2-stub-card-body">
-                <h3>{{ lot.artist }}</h3>
-                <p class="d2-tour">{{ lot.tour }}</p>
-                <div class="d2-stub-specs">
-                  <div><strong>VENUE:</strong> {{ lot.venue }}, {{ lot.city }}</div>
-                  <div><strong>DATE:</strong> {{ lot.date }}</div>
-                  <div><strong>SEAT:</strong> {{ lot.seats }}</div>
-                </div>
-              </div>
-              <div class="d2-card-perf" aria-hidden="true">
-                <span class="d2-side-notch left"></span>
-                <span class="d2-side-notch right"></span>
-              </div>
-              <div class="d2-stub-card-foot">
-                <div class="d2-price-box">
-                  <div>
-                    <small>BID ({{ lot.bids }})</small>
-                    <strong>{{ lot.currentBid }}</strong>
-                  </div>
-                  <div>
-                    <small>CLOSES</small>
-                    <span class="d2-mono">{{ lot.timeLeft }}</span>
-                  </div>
-                  <div>
-                    <small>BUY NOW</small>
-                    <span>{{ lot.buyNow }}</span>
-                  </div>
-                </div>
-                <label class="d2-btn-black d2-btn-block" for="p-auth">
-                  PLACE BID {{ lot.nextBid }} ↗
-                </label>
-              </div>
-            </article>
-          </div>
-
-          <TicketFormatViews prefix="d2" />
-        </div>
-      </section>
-
-      <section id="d2-rules" class="d2-section">
-        <div class="d2-container d2-rules-grid">
-          <div class="d2-rule-box">
+      <section id="d1-rules" class="d1-section">
+        <div class="d1-container d1-rules-grid">
+          <div class="d1-rule-box">
             <span>01 //</span>
             <h3>OAUTH 2.0 GATE</h3>
             <p>Every bidder authenticates through Google, Apple, Spotify, or GitHub before entering a lot.</p>
           </div>
-          <div class="d2-rule-box">
+          <div class="d1-rule-box">
             <span>02 //</span>
             <h3>PERFORATED ESCROW</h3>
             <p>Winning bids settle only after verified mobile barcodes clear into your Ticketomat vault.</p>
           </div>
-          <div class="d2-rule-box">
+          <div class="d1-rule-box">
             <span>03 //</span>
             <h3>ANTI-SNIPE CLOCK</h3>
             <p>Last-minute bids inside 120 seconds automatically add 2 minutes so human fans never lose to scripts.</p>
@@ -921,524 +954,293 @@ const TicketFormatViews: FunctionalComponent<{ prefix: string }> = (props) =>
       </section>
     </section>
 
-    <!-- DESIGN 2: LOGIN / SIGNUP WITH OAUTH 2.0 (VIP BACKSTAGE PASS) -->
-    <section class="view-auth d2-auth-wrap">
-      <div class="d2-pass-card">
-        <div class="d2-lanyard-slot" aria-hidden="true"><span></span></div>
-        <div class="d2-pass-head">
-          <label class="d2-back-chip" for="p-home">← BACK TO LOTS</label>
-          <span class="d2-stamp d2-stamp-lime">ADMIT ONE // OAUTH 2.0</span>
+    <!-- DESIGN 1: LOGIN / SIGNUP WITH OAUTH 2.0 (VIP BACKSTAGE PASS) -->
+    <section class="view-auth d1-auth-wrap">
+      <div class="d1-pass-card">
+        <div class="d1-lanyard-slot" aria-hidden="true"><span></span></div>
+        <div class="d1-pass-head">
+          <label class="d1-back-chip" for="p-home">← BACK TO LOTS</label>
+          <span class="d1-stamp d1-stamp-lime">ADMIT ONE // OAUTH 2.0</span>
         </div>
 
-        <div class="d2-pass-title">
+        <div class="d1-pass-title">
           <h2>TICKETOMAT<sup>®</sup> BACKSTAGE PASS</h2>
           <p>AUTHENTICATE ONCE TO UNLOCK LIVE BIDDING &amp; INSTANT TRANSFERS</p>
         </div>
 
-        <div class="d2-auth-tabs">
+        <div class="d1-auth-tabs">
           <label class="auth-tab" for="a-login">[ LOG IN ]</label>
           <label class="auth-tab" for="a-signup">[ SIGN UP ]</label>
         </div>
 
-        <div class="d2-oauth-grid">
+        <div class="d1-oauth-grid">
           <button
             v-for="provider in oauthProvidersAlt"
-            :key="'d2-oa-' + provider.id"
+            :key="'d1-oa-' + provider.id"
             type="button"
-            class="d2-oauth-btn"
+            class="d1-oauth-btn"
           >
             <svg class="oauth-svg"><use :href="provider.iconId" /></svg>
             <span>OAUTH // {{ provider.name.toUpperCase() }}</span>
           </button>
         </div>
 
-        <div class="d2-card-perf" aria-hidden="true">
-          <span class="d2-side-notch left"></span>
-          <span class="d2-side-notch right"></span>
+        <div class="d1-card-perf" aria-hidden="true">
+          <span class="d1-side-notch left"></span>
+          <span class="d1-side-notch right"></span>
         </div>
 
-        <form class="d2-form" @submit.prevent>
-          <label class="d2-field signup-only">
+        <form class="d1-form" @submit.prevent>
+          <label class="d1-field signup-only">
             <span>BIDDER ALIAS</span>
             <input type="text" placeholder="STAGE_RUNNER_99" />
           </label>
-          <label class="d2-field">
+          <label class="d1-field">
             <span>EMAIL ADDRESS</span>
             <input type="email" placeholder="fan@ticketomat.io" />
           </label>
-          <label class="d2-field">
+          <label class="d1-field">
             <span>PASSWORD</span>
             <input type="password" placeholder="••••••••••••" />
           </label>
-          <button type="button" class="d2-btn-lime d2-btn-block login-only">
+          <button type="button" class="d1-btn-lime d1-btn-block login-only">
             ENTER AUCTION FLOOR →
           </button>
-          <button type="button" class="d2-btn-lime d2-btn-block signup-only">
+          <button type="button" class="d1-btn-lime d1-btn-block signup-only">
             ISSUE VERIFIED PASS →
           </button>
         </form>
 
-        <div class="d2-barcode d2-barcode-wide" aria-hidden="true"></div>
-        <div class="d2-pass-serial">SERIAL NO. TM-OAUTH2-PKCE-2026-8841</div>
+        <div class="d1-barcode d1-barcode-wide" aria-hidden="true"></div>
+        <div class="d1-pass-serial">SERIAL NO. TM-OAUTH2-PKCE-2026-8841</div>
       </div>
     </section>
   </main>
 
   <!-- =======================================================================
-       DESIGN 3: VELVET & GOLD (Prestige Venue & Editorial Box Office)
+       DESIGNS 2–5: CONSUMER-FRIENDLY SWISS STUB VARIATIONS
        ======================================================================= -->
-  <main class="design-canvas design-3">
-    <!-- DESIGN 3: HOMEPAGE -->
+  <main
+    v-for="v in swissVariants"
+    :key="v.id"
+    :class="['design-canvas', 'sv-canvas', v.canvasClass]"
+  >
+    <!-- HOMEPAGE -->
     <section class="view-home">
-      <header class="d3-nav">
-        <div class="d3-container d3-nav-inner">
-          <div class="d3-nav-left">
-            <a href="#d3-lots">Evening Lots</a>
-            <a href="#d3-lots">Symphony &amp; Opera</a>
-            <a href="#d3-concierge">Provenance</a>
+      <div class="sv-marquee">
+        <span>{{ v.marquee }}</span>
+      </div>
+
+      <header class="sv-nav">
+        <div class="sv-container sv-nav-inner">
+          <div class="sv-brand">
+            <span class="sv-brand-box">{{ v.brandMark }}</span>
+            <span>{{ v.brandName }}<sup>®</sup></span>
           </div>
-          <div class="d3-brand">
-            <span class="d3-brand-main">TICKETOMAT</span>
-            <span class="d3-brand-sub">PRIVATE BOX OFFICE · EST. 2026</span>
-          </div>
-          <div class="d3-nav-right">
-            <label class="d3-btn-outline" for="p-auth">Member Sign In</label>
-            <label class="d3-btn-gold" for="p-auth">OAuth Concierge</label>
-          </div>
-        </div>
-      </header>
-
-      <section class="d3-hero">
-        <div class="d3-container d3-hero-grid">
-          <div class="d3-hero-copy">
-            <span class="d3-eyebrow">Season 2026 · Curated Allocation</span>
-            <h1 class="d3-serif-h1">
-              Front-Row &amp; <em>Box Seats</em>,<br />Priced by Demand.
-            </h1>
-            <p class="d3-lead">
-              An auction house for iconic concert halls, stadium residencies, and private hospitality suites.
-              Authenticated via OAuth 2.0 with insured mobile escrow.
-            </p>
-            <div class="d3-hero-cta">
-              <a class="d3-btn-gold d3-btn-lg" href="#d3-lots">View Evening Catalogue</a>
-              <label class="d3-btn-outline d3-btn-lg" for="p-auth">Join Private Floor</label>
-            </div>
-          </div>
-
-          <article class="d3-marquee-frame">
-            <div class="d3-marquee-inner">
-              <div class="d3-lot-head">
-                <span>LOT NO. 001 · MARQUEE</span>
-                <span>RESERVE MET</span>
-              </div>
-              <h2 class="d3-serif-h2">Hans Zimmer &amp; Symphony Orchestra</h2>
-              <p class="d3-lot-venue">Royal Albert Hall, London · Grand Tier Box 14 (4 Seats)</p>
-
-              <div class="d3-reserve-wrap">
-                <div class="d3-reserve-labels">
-                  <span>Current High Bid</span>
-                  <span>Estimate $620 – $950</span>
-                </div>
-                <div class="d3-bid-figure">$680</div>
-                <div class="d3-progress"><span style="width: 88%"></span></div>
-                <div class="d3-reserve-foot">
-                  <span>19 Verified Bids</span>
-                  <span>Closes in 02h 14m</span>
-                </div>
-              </div>
-
-              <label class="d3-btn-gold d3-btn-full" for="p-auth">Enter Bid Room ($700 Next)</label>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section id="d3-lots" class="d3-section">
-        <div class="d3-container">
-          <div class="d3-lots-header">
-            <div class="d3-cat-bar">
-              <span class="d3-cat active">All Curated Lots</span>
-              <span class="d3-cat">Symphony &amp; Hall</span>
-              <span class="d3-cat">World Tours</span>
-              <span class="d3-cat">Festival Suites</span>
-              <span class="d3-cat">Closing Tonight</span>
-            </div>
-            <div class="d3-format-row">
-              <span class="d3-format-note">Evening Catalogue · 06 Curated Lots</span>
-              <FormatSwitcherBar prefix="d3" />
-            </div>
-          </div>
-
-          <div class="d3-grid fmt-view-cards">
-            <article v-for="(lot, idx) in lots" :key="'d3-' + lot.id" class="d3-lot-card">
-              <div class="d3-lot-top">
-                <span>LOT 00{{ idx + 2 }}</span>
-                <span>{{ lot.category }}</span>
-              </div>
-              <h3 class="d3-serif-h3">{{ lot.artist }}</h3>
-              <p class="d3-lot-tour">{{ lot.tour }}</p>
-              <p class="d3-lot-meta">{{ lot.venue }} · {{ lot.city }}</p>
-              <p class="d3-lot-seat">{{ lot.seats }}</p>
-
-              <div class="d3-hairline"></div>
-
-              <div class="d3-lot-prices">
-                <div>
-                  <small>HIGH BID</small>
-                  <strong>{{ lot.currentBid }}</strong>
-                </div>
-                <div>
-                  <small>CLOSES</small>
-                  <span>{{ lot.timeLeft }}</span>
-                </div>
-                <div>
-                  <small>DIRECT BUY</small>
-                  <span>{{ lot.buyNow }}</span>
-                </div>
-              </div>
-
-              <label class="d3-lot-link" for="p-auth">Submit Bid ({{ lot.nextBid }}) →</label>
-            </article>
-          </div>
-
-          <TicketFormatViews prefix="d3" />
-        </div>
-      </section>
-
-      <section id="d3-concierge" class="d3-section d3-concierge">
-        <div class="d3-container d3-concierge-grid">
-          <div>
-            <h4>01 · Provenance Guaranteed</h4>
-            <p>Every seat location and barcode is cryptographically verified prior to listing.</p>
-          </div>
-          <div>
-            <h4>02 · OAuth 2.0 Patron Identity</h4>
-            <p>Seamless concierge login through Google, Apple, or Spotify prevents automated bidding.</p>
-          </div>
-          <div>
-            <h4>03 · White-Glove Escrow</h4>
-            <p>Settlement executes only once tickets are securely transferred to your device.</p>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <!-- DESIGN 3: LOGIN / SIGNUP WITH OAUTH 2.0 (PRIVATE BOX OFFICE LEDGER) -->
-    <section class="view-auth d3-auth-wrap">
-      <div class="d3-ledger-card">
-        <div class="d3-ledger-left">
-          <label class="d3-back-gold" for="p-home">← Return to Catalogue</label>
-          <span class="d3-eyebrow">OAuth 2.0 Concierge</span>
-          <h2 class="d3-serif-h2">Instant Patron Authentication</h2>
-          <p class="d3-ledger-copy">
-            Authenticate via your trusted OAuth 2.0 provider to receive immediate bidding privileges
-            across all Reserve and Marquee lots.
-          </p>
-
-          <div class="d3-oauth-stack">
-            <button
-              v-for="provider in oauthProviders"
-              :key="'d3-oa-' + provider.id"
-              type="button"
-              class="d3-oauth-btn"
+          <nav class="sv-links">
+            <a
+              v-for="link in v.navLinks"
+              :key="v.prefix + '-' + link.label"
+              :href="'#' + v.prefix + '-' + link.anchor"
             >
-              <svg class="oauth-svg"><use :href="provider.iconId" /></svg>
-              <span>{{ provider.name }}</span>
-              <span class="d3-oa-arrow">→</span>
-            </button>
-          </div>
-
-          <div class="d3-seal">
-            <svg class="inline-ico"><use href="#icon-shield" /></svg>
-            <span>RFC 6749 PKCE · Insured Box Office Escrow</span>
-          </div>
-        </div>
-
-        <div class="d3-ledger-right">
-          <div class="d3-auth-tabs">
-            <label class="auth-tab" for="a-login">Member Sign In</label>
-            <label class="auth-tab" for="a-signup">New Patron</label>
-          </div>
-
-          <h3 class="d3-serif-dark login-only">Access Your Box Office Account</h3>
-          <h3 class="d3-serif-dark signup-only">Register as a Verified Patron</h3>
-
-          <form class="d3-form" @submit.prevent>
-            <label class="d3-field signup-only">
-              <span>Patron Full Name</span>
-              <input type="text" placeholder="Clara Vance" />
-            </label>
-            <label class="d3-field">
-              <span>Email Address</span>
-              <input type="email" placeholder="clara.vance@domain.com" />
-            </label>
-            <label class="d3-field">
-              <span>Passphrase</span>
-              <input type="password" placeholder="••••••••••••" />
-            </label>
-            <div class="d3-form-meta login-only">
-              <label><input type="checkbox" checked /> Remember device</label>
-              <a href="#recover" @click.prevent>Recover passphrase</a>
-            </div>
-            <button type="button" class="d3-btn-obsidian d3-btn-full login-only">
-              Enter Bidding Room
-            </button>
-            <button type="button" class="d3-btn-obsidian d3-btn-full signup-only">
-              Complete Patron Registration
-            </button>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- =======================================================================
-       DESIGN 4: DAYLIGHT ARENA (Clean Consumer Bid Exchange — StockX / Stripe)
-       ======================================================================= -->
-  <main class="design-canvas design-4">
-    <!-- DESIGN 4: HOMEPAGE -->
-    <section class="view-home">
-      <div class="d4-ticker">
-        <div class="d4-container d4-ticker-inner">
-          <span><strong>CLEARED:</strong> Coldplay Wembley · $142 (-32% vs face)</span>
-          <span><strong>CLEARED:</strong> Billie Eilish MSG · $178 (-21% vs face)</span>
-          <span><strong>CLEARED:</strong> Oasis Manchester · $215 (-27% vs face)</span>
-        </div>
-      </div>
-
-      <header class="d4-nav">
-        <div class="d4-container d4-nav-inner">
-          <div class="d4-brand">
-            <span class="d4-logo-badge"><svg><use href="#icon-ticket" /></svg></span>
-            <span>Ticketomat</span>
-          </div>
-
-          <div class="d4-search">
-            <input type="search" placeholder="Search concerts, artists, venues, or cities..." />
-          </div>
-
-          <div class="d4-nav-actions">
-            <a class="d4-nav-link" href="#d4-lots">Live Market</a>
-            <label class="d4-btn-ghost" for="p-auth">Log in</label>
-            <label class="d4-btn-cobalt" for="p-auth">Sign up</label>
-          </div>
+              {{ link.label }}
+            </a>
+          </nav>
+          <label class="sv-btn-accent" for="p-auth">{{ v.navCta }}</label>
         </div>
       </header>
 
-      <section class="d4-hero">
-        <div class="d4-container d4-hero-grid">
-          <div class="d4-hero-copy">
-            <span class="d4-trust-pill">
-              <svg class="inline-ico"><use href="#icon-shield" /></svg>
-              OAuth 2.0 Verified · 100% Buyer Escrow Guarantee
-            </span>
-            <h1 class="d4-h1">The Live Exchange for Event Tickets.</h1>
-            <p class="d4-lead">
-              Compare live bids against retail face value in real time. Bid what a seat is worth to you,
-              or lock it instantly below box-office resale prices.
-            </p>
-            <div class="d4-city-tags">
-              <span>Popular Cities:</span>
-              <a href="#d4-lots">London</a>
-              <a href="#d4-lots">New York</a>
-              <a href="#d4-lots">Las Vegas</a>
-              <a href="#d4-lots">Manchester</a>
+      <section class="sv-hero">
+        <div class="sv-container">
+          <div class="sv-ticket-hero">
+            <div class="sv-ticket-main">
+              <div class="sv-ticket-meta">
+                <span class="sv-stamp sv-stamp-feature">{{ v.heroBadge }}</span>
+                <span class="sv-series-note">{{ v.heroSeries }}</span>
+              </div>
+              <h1>
+                {{ v.heroHeadlineTop }}<br />
+                {{ v.heroHeadlineBottom }}
+              </h1>
+              <p class="sv-hero-event">
+                <strong>{{ v.heroEventTitle }}</strong>
+                <span>{{ v.heroEventMeta }}</span>
+              </p>
+              <div class="sv-hero-actions">
+                <a class="sv-btn-primary" :href="'#' + v.prefix + '-lots'">{{ v.heroPrimaryCta }}</a>
+                <label class="sv-btn-secondary" for="p-auth">{{ v.heroSecondaryCta }}</label>
+              </div>
+            </div>
+
+            <div class="sv-ticket-perf" aria-hidden="true">
+              <span class="sv-notch sv-notch-top"></span>
+              <span class="sv-notch sv-notch-bot"></span>
+            </div>
+
+            <div class="sv-ticket-stub">
+              <div class="sv-stub-head">
+                <span>{{ v.heroStubLot }}</span>
+                <span>{{ v.heroStubBids }}</span>
+              </div>
+              <div class="sv-stub-price">
+                <small>{{ v.heroPriceLabel }}</small>
+                <strong>$185</strong>
+                <span class="sv-discount-note">{{ v.heroDiscountNote }}</span>
+              </div>
+              <div class="sv-stub-timer">{{ v.heroTimerText }}</div>
+              <label class="sv-btn-accent sv-btn-block" for="p-auth">{{ v.heroBidCta }}</label>
+              <div class="sv-barcode" aria-hidden="true"></div>
             </div>
           </div>
-
-          <article class="d4-market-card">
-            <div class="d4-market-top">
-              <div>
-                <span class="d4-market-badge">HOT MARKET · 41 BIDS</span>
-                <h2>Coldplay: Music of the Spheres</h2>
-                <p>Wembley Stadium, London · Sec 114, Row 8 (2 Tickets)</p>
-              </div>
-              <span class="d4-save-pill">32% Below Face</span>
-            </div>
-
-            <div class="d4-market-metrics">
-              <div class="d4-metric-box highlight">
-                <small>Highest Bid</small>
-                <strong>$142</strong>
-              </div>
-              <div class="d4-metric-box">
-                <small>Lowest Buy-Now</small>
-                <strong>$195</strong>
-              </div>
-              <div class="d4-metric-box">
-                <small>Face Value</small>
-                <span class="strike">$210</span>
-              </div>
-            </div>
-
-            <div class="d4-spark-row">
-              <span>Recent 6h Bid Activity</span>
-              <div class="d4-bars" aria-hidden="true">
-                <i style="height: 35%"></i><i style="height: 55%"></i><i style="height: 45%"></i>
-                <i style="height: 75%"></i><i style="height: 65%"></i><i style="height: 92%"></i>
-                <i style="height: 100%"></i>
-              </div>
-              <span class="d4-countdown">54m left</span>
-            </div>
-
-            <div class="d4-market-actions">
-              <label class="d4-btn-cobalt d4-btn-full" for="p-auth">Place Bid ($150)</label>
-              <label class="d4-btn-outline d4-btn-full" for="p-auth">Buy Now ($195)</label>
-            </div>
-          </article>
         </div>
       </section>
 
-      <section id="d4-lots" class="d4-section">
-        <div class="d4-container">
-          <div class="d4-toolbar">
-            <div class="d4-chips">
-              <span class="d4-chip active">All Events</span>
-              <span class="d4-chip">Concerts</span>
-              <span class="d4-chip">Festivals</span>
-              <span class="d4-chip">Electronic</span>
-              <span class="d4-chip">Under $200</span>
+      <section :id="v.prefix + '-lots'" class="sv-section">
+        <div class="sv-container">
+          <div class="sv-filter-bar">
+            <div class="sv-filter-heading">
+              <h2>{{ v.lotsTitle }}</h2>
+              <span class="sv-count-badge">6 Live</span>
             </div>
-            <div class="d4-toolbar-right">
-              <FormatSwitcherBar prefix="d4" />
-              <details class="d4-sort-dropdown">
-                <summary>Sort: Ending Soonest ▾</summary>
-                <ul>
-                  <li>Ending Soonest</li>
-                  <li>Biggest % Below Face</li>
-                  <li>Most Active Bids</li>
-                  <li>Lowest Current Bid</li>
-                </ul>
-              </details>
+            <div class="sv-filter-controls">
+              <div class="sv-stamps">
+                <span
+                  v-for="(chip, chipIdx) in v.filterChips"
+                  :key="v.prefix + '-chip-' + chip"
+                  class="sv-stamp"
+                  :class="{ 'sv-stamp-active': chipIdx === 0 }"
+                >
+                  {{ chip }}
+                </span>
+              </div>
+              <FormatSwitcherBar :prefix="v.prefix" />
             </div>
           </div>
 
-          <div class="d4-grid fmt-view-cards">
-            <article v-for="lot in lots" :key="'d4-' + lot.id" class="d4-card">
-              <div class="d4-card-head" :class="lot.accentClass">
-                <span class="d4-card-cat">{{ lot.category }}</span>
-                <span class="d4-save-pill">{{ lot.savingsPct }}</span>
+          <div class="sv-grid fmt-view-cards">
+            <article v-for="lot in lots" :key="v.prefix + '-' + lot.id" class="sv-stub-card">
+              <div class="sv-stub-card-top" :class="lot.accentClass">
+                <span class="sv-cat-tag" :class="lot.accentClass">{{ lot.category }}</span>
+                <span class="sv-lot-ref">Lot {{ lot.lotCode }}</span>
               </div>
-              <div class="d4-card-body">
+              <div class="sv-stub-card-body">
                 <h3>{{ lot.artist }}</h3>
-                <p class="d4-card-sub">{{ lot.venue }}, {{ lot.city }} · {{ lot.date }}</p>
-                <div class="d4-seat-tag">{{ lot.seats }}</div>
-
-                <div class="d4-card-prices">
+                <p class="sv-tour">{{ lot.tour }}</p>
+                <div class="sv-stub-specs">
                   <div>
-                    <small>Current Bid ({{ lot.bids }})</small>
+                    <small>Venue</small>
+                    <span>{{ lot.venue }}, {{ lot.city }}</span>
+                  </div>
+                  <div>
+                    <small>Date &amp; Time</small>
+                    <span>{{ lot.date }}</span>
+                  </div>
+                  <div>
+                    <small>Seats</small>
+                    <span>{{ lot.seats }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="sv-card-perf" aria-hidden="true">
+                <span class="sv-side-notch left"></span>
+                <span class="sv-side-notch right"></span>
+              </div>
+              <div class="sv-stub-card-foot">
+                <div class="sv-price-box">
+                  <div>
+                    <small>Bid ({{ lot.bids }})</small>
                     <strong>{{ lot.currentBid }}</strong>
                   </div>
                   <div>
-                    <small>Buy Now</small>
-                    <span>{{ lot.buyNow }}</span>
+                    <small>Time Left</small>
+                    <span class="sv-time-num" :class="{ urgent: lot.urgent }">{{ lot.timeLeft }}</span>
                   </div>
                   <div>
-                    <small>Time Left</small>
-                    <span class="d4-time-pill" :class="{ urgent: lot.urgent }">{{ lot.timeLeft }}</span>
+                    <small>Buy Now</small>
+                    <span class="sv-buy-num">{{ lot.buyNow }}</span>
                   </div>
                 </div>
-
-                <div class="d4-card-btns">
-                  <label class="d4-btn-cobalt d4-btn-full" for="p-auth">Bid {{ lot.nextBid }}</label>
-                  <label class="d4-btn-outline" for="p-auth">Buy</label>
-                </div>
+                <label class="sv-btn-primary sv-btn-block" for="p-auth">
+                  {{ v.cardBidLabel }} {{ lot.nextBid }} →
+                </label>
               </div>
             </article>
           </div>
 
-          <TicketFormatViews prefix="d4" />
+          <TicketFormatViews :prefix="v.prefix" />
         </div>
       </section>
 
-      <section class="d4-section d4-trust-band">
-        <div class="d4-container d4-trust-grid">
-          <div class="d4-trust-tile">
-            <strong>OAuth 2.0 Identity</strong>
-            <p>Verified bidder logins prevent bots and multi-account sniping.</p>
-          </div>
-          <div class="d4-trust-tile">
-            <strong>Live Market Pricing</strong>
-            <p>Clear comparison between current bid, instant buyout, and face value.</p>
-          </div>
-          <div class="d4-trust-tile">
-            <strong>100% Escrow Hold</strong>
-            <p>Your payment stays protected until ticket barcode transfer confirms.</p>
-          </div>
-          <div class="d4-trust-tile">
-            <strong>Instant Transfer</strong>
-            <p>Receive Apple Wallet &amp; NFC passes directly after winning.</p>
+      <section :id="v.prefix + '-rules'" class="sv-section sv-rules-section">
+        <div class="sv-container sv-rules-grid">
+          <div v-for="rule in v.rules" :key="v.prefix + '-' + rule.step" class="sv-rule-box">
+            <span class="sv-rule-step">{{ rule.step }}</span>
+            <h3>{{ rule.title }}</h3>
+            <p>{{ rule.desc }}</p>
           </div>
         </div>
       </section>
     </section>
 
-    <!-- DESIGN 4: LOGIN / SIGNUP WITH OAUTH 2.0 -->
-    <section class="view-auth d4-auth-wrap">
-      <div class="d4-auth-shell">
-        <div class="d4-auth-top-bar">
-          <div class="d4-brand">
-            <span class="d4-logo-badge"><svg><use href="#icon-ticket" /></svg></span>
-            <span>Ticketomat</span>
-          </div>
-          <label class="d4-back-link" for="p-home">← Back to Exchange</label>
+    <!-- LOGIN / SIGNUP WITH OAUTH 2.0 -->
+    <section class="view-auth sv-auth-wrap">
+      <div class="sv-pass-card">
+        <div class="sv-lanyard-slot" aria-hidden="true"><span></span></div>
+        <div class="sv-pass-head">
+          <label class="sv-back-chip" for="p-home">{{ v.authBackLabel }}</label>
+          <span class="sv-stamp sv-stamp-pass">{{ v.authBadge }}</span>
         </div>
 
-        <div class="d4-auth-card">
-          <div class="d4-trust-pill d4-trust-center">
-            <svg class="inline-ico"><use href="#icon-shield" /></svg>
-            OAuth 2.0 Secured · Escrow Protected
-          </div>
-
-          <div class="d4-auth-tabs">
-            <label class="auth-tab" for="a-login">Log in</label>
-            <label class="auth-tab" for="a-signup">Create account</label>
-          </div>
-
-          <h2 class="login-only">Sign in to start bidding</h2>
-          <h2 class="signup-only">Create your Ticketomat account</h2>
-          <p class="d4-auth-sub">One-click OAuth 2.0 verification unlocks instant live bids.</p>
-
-          <div class="d4-oauth-stack">
-            <button
-              v-for="provider in oauthProvidersAlt"
-              :key="'d4-oa-' + provider.id"
-              type="button"
-              class="d4-oauth-btn"
-            >
-              <svg class="oauth-svg"><use :href="provider.iconId" /></svg>
-              <span>Continue with {{ provider.name }}</span>
-              <span v-if="provider.badge" class="d4-rec-pill">{{ provider.badge }}</span>
-            </button>
-          </div>
-
-          <div class="d4-divider"><span>OR USE EMAIL</span></div>
-
-          <form class="d4-form" @submit.prevent>
-            <label class="d4-field signup-only">
-              <span>Full Name</span>
-              <input type="text" placeholder="Jordan Taylor" />
-            </label>
-            <label class="d4-field">
-              <span>Email address</span>
-              <input type="email" placeholder="jordan@example.com" />
-            </label>
-            <label class="d4-field">
-              <span>Password</span>
-              <input type="password" placeholder="Enter your password" />
-            </label>
-            <div class="d4-form-meta login-only">
-              <label><input type="checkbox" checked /> Remember me</label>
-              <a href="#reset" @click.prevent>Forgot password?</a>
-            </div>
-            <button type="button" class="d4-btn-cobalt d4-btn-full d4-btn-lg login-only">
-              Log in to Ticketomat
-            </button>
-            <button type="button" class="d4-btn-cobalt d4-btn-full d4-btn-lg signup-only">
-              Create Verified Account
-            </button>
-          </form>
+        <div class="sv-pass-title">
+          <h2>{{ v.authTitle }}</h2>
+          <p>{{ v.authSubtitle }}</p>
         </div>
+
+        <div class="sv-auth-tabs">
+          <label class="auth-tab" for="a-login">Log In</label>
+          <label class="auth-tab" for="a-signup">Sign Up</label>
+        </div>
+
+        <div class="sv-oauth-grid">
+          <button
+            v-for="provider in oauthProvidersAlt"
+            :key="v.prefix + '-oa-' + provider.id"
+            type="button"
+            class="sv-oauth-btn"
+          >
+            <svg class="oauth-svg" aria-hidden="true"><use :href="provider.iconId" /></svg>
+            <span>Continue with {{ provider.name }}</span>
+          </button>
+        </div>
+
+        <div class="sv-card-perf" aria-hidden="true">
+          <span class="sv-side-notch left"></span>
+          <span class="sv-side-notch right"></span>
+        </div>
+
+        <form class="sv-form" @submit.prevent>
+          <label class="sv-field signup-only">
+            <span>{{ v.authNameLabel }}</span>
+            <input type="text" :placeholder="v.authNamePlaceholder" />
+          </label>
+          <label class="sv-field">
+            <span>Email Address</span>
+            <input type="email" :placeholder="v.authEmailPlaceholder" />
+          </label>
+          <label class="sv-field">
+            <span>Password</span>
+            <input type="password" placeholder="••••••••••••" />
+          </label>
+          <button type="button" class="sv-btn-accent sv-btn-block login-only">
+            {{ v.authLoginBtn }}
+          </button>
+          <button type="button" class="sv-btn-accent sv-btn-block signup-only">
+            {{ v.authSignupBtn }}
+          </button>
+        </form>
+
+        <div class="sv-barcode sv-barcode-wide" aria-hidden="true"></div>
+        <div class="sv-pass-serial">{{ v.authFooterNote }}</div>
       </div>
     </section>
   </main>

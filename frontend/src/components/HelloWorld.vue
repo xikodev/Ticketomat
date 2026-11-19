@@ -1,7 +1,10 @@
-<script setup lang="ts"></script>
-
+<script setup lang="ts">
+import Header from "./Header.vue";
+</script>
 <template>
-  <div>
-    <h1 class="text-center text-7xl">Hello world</h1>
+  <div class="bg-amber-50 flex flex-col min-h-screen">
+    <Header />
+    <main class="grow">Text</main>
+    <footer>Some footer</footer>
   </div>
 </template>

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Header from "./Header.vue";
+import Card from "./Card.vue";
 </script>
 <template>
-  <div class="bg-amber-50 flex flex-col min-h-screen">
+  <div class="bg-amber-50 flex flex-col min-h-screen pb-10">
     <Header />
-    <main class="grow grid-cols-8 mx-50 mt-10">
+    <main class="grow flex flex-col gap-5 mx-50 mt-10">
       <div class="w-full h-90 bg-white border-custom flex">
         <div class="grow grid p-10 h-full items-center">
           <div class="flex gap-2">
@@ -58,7 +59,8 @@ import Header from "./Header.vue";
           </button>
         </div>
       </div>
+      <h2 class="text-3xl font-bold mt-4">Available Tickets:</h2>
+      <Card />
     </main>
-    <footer>Some footer</footer>
   </div>
 </template>

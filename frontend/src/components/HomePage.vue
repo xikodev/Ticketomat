@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Header from "./Header.vue";
-import CardList from "./CardList.vue";
+import TicketList from "./TicketList.vue";
 </script>
 <template>
   <div class="bg-amber-50 flex flex-col min-h-screen pb-10">
@@ -60,7 +60,7 @@ import CardList from "./CardList.vue";
         </div>
       </div>
       <h2 class="text-3xl font-bold mt-4">Available Tickets:</h2>
-      <CardList />
+      <TicketList />
     </main>
   </div>
 </template>
